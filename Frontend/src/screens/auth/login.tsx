@@ -31,6 +31,7 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
     }
 
     Alert.alert("Success", `Login Successful\nUsername: ${username}`);
+    // ❌ Removed: navigation.navigate("Home");
   };
 
   // GOOGLE LOGIN - FIXED
@@ -39,13 +40,6 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
 
-      // ✅ Use userInfo directly to fix ESLint error
-      const name = userInfo.user.name ?? "User";
-      const email = userInfo.user.email ?? "Not provided";
-      
-      Alert.alert("Google Login Successful", `Welcome ${name}\nEmail: ${email}`);
-      console.log("Google User Info:", userInfo); // ✅ Use userInfo here
-
     } catch (error) {
       console.log("Google Login Error:", error);
       
@@ -53,12 +47,12 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
       if (error && typeof error === 'object' && 'code' in error &&
           (error as any).code === statusCodes.SIGN_IN_CANCELLED) {
         Alert.alert("Login Failed", "You cancelled Google Sign-In. Please try again.");
-        return;
+        return; // Don't navigate to Home
       }
       
       // Other errors
       Alert.alert("Login Failed", "Google Sign-In failed. Please try again.");
-      return;
+      return; // Don't navigate to Home
     }
   };
 
@@ -69,6 +63,7 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
         "LinkedIn Login",
         `LinkedIn Sign-In would open here!\n\nUsername: ${username || 'Not entered'}\nPassword: ${password ? '••••••••' : 'Not entered'}`
       );
+      // ❌ Removed: navigation.navigate("Home");
     } catch (error) {
       console.log("LinkedIn Login Error:", error);
       Alert.alert("Login Failed", "LinkedIn Sign-In failed. Please try again.");
