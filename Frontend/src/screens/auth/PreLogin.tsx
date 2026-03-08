@@ -1,242 +1,232 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
+  Image,
   TouchableOpacity,
-  Animated,
-  Dimensions,
   StatusBar,
-  ImageBackground,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { AuthStackParamList } from '../../navigation/types';
+} from "react-native";
 
-type Props = {
-  navigation: NativeStackNavigationProp<AuthStackParamList, 'PreLogin'>;
-};
+export default function PreLogin({ navigation }: { navigation?: any }) {
+  const [activeIndex, setActiveIndex] = useState(0);
 
-const { width } = Dimensions.get('window');
+  const slides = [
+    {
+      category: "DATA MANAGEMENT",
+      title: "Centralized Student Records",
+      description:
+        "Eliminate scattered data. Manage academic records, activities, and achievements in one secure system.",
+    },
+    {
+      category: "ACADEMIC TRACKING",
+      title: "Your Complete Profile",
+      description:
+        "Access your grades, participation history, and achievements instantly without manual searching.",
+    },
+    {
+      category: "MENTORSHIP",
+      title: "Connect & Collaborate",
+      description:
+        "Bridge the gap between juniors and seniors for better guidance, mentorship, and academic support.",
+    },
+  ];
 
-export default function PreLoginScreen({
-  navigation,
-}: Props): React.JSX.Element {
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const slideAnim = useRef(new Animated.Value(40)).current;
-  const btnAnim = useRef(new Animated.Value(0)).current;
-  const glowAnim = useRef(new Animated.Value(0.4)).current;
+  const handleNext = () => {
+    if (activeIndex < slides.length - 1) {
+      setActiveIndex(activeIndex + 1);
+    } else {
+      navigation?.navigate?.("Login");
+    }
+  };
 
-  useEffect(() => {
-    Animated.sequence([
-      Animated.parallel([
-        Animated.timing(fadeAnim, {
-          toValue: 1,
-          duration: 900,
-          useNativeDriver: true,
-        }),
-        Animated.timing(slideAnim, {
-          toValue: 0,
-          duration: 900,
-          useNativeDriver: true,
-        }),
-      ]),
-      Animated.timing(btnAnim, {
-        toValue: 1,
-        duration: 500,
-        useNativeDriver: true,
-      }),
-    ]).start();
-
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(glowAnim, {
-          toValue: 1,
-          duration: 1800,
-          useNativeDriver: true,
-        }),
-        Animated.timing(glowAnim, {
-          toValue: 0.4,
-          duration: 1800,
-          useNativeDriver: true,
-        }),
-      ]),
-    ).start();
-  }, []);
+  const handleSkip = () => {
+    navigation?.navigate?.("Login");
+  };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#f5f3ee" />
+    <View style={styles.container}>
+      <StatusBar barStyle="light-content" />
 
-      {/* Header */}
-      <Animated.View style={[styles.header, { opacity: fadeAnim }]}>
-        <Text style={styles.appName}>ClassStruct</Text>
-      </Animated.View>
+      {/* Image Section */}
+      <View style={styles.imageSection}>
+        <Image
+          source={{
+            uri: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f",
+          }}
+          style={styles.backgroundImage}
+        />
 
-      {/* Hero Image */}
-      <Animated.View
-        style={[
-          styles.imageContainer,
-          { opacity: fadeAnim, transform: [{ translateY: slideAnim }] },
-        ]}
-      >
-        <Animated.View style={[styles.glowRing, { opacity: glowAnim }]} />
-        {/* Replace with your actual image: source={require('../../assets/images/hero.png')} */}
-        <ImageBackground
-          source={{ uri: 'https://placekitten.com/400/400' }}
-          style={styles.heroImage}
-          imageStyle={styles.heroImageStyle}
-        >
-          <View style={styles.imageOverlay} />
-        </ImageBackground>
-      </Animated.View>
-
-      {/* Text Content */}
-      <Animated.View
-        style={[
-          styles.textContent,
-          { opacity: fadeAnim, transform: [{ translateY: slideAnim }] },
-        ]}
-      >
-        <Text style={styles.tagline}>Get started</Text>
-        <Text style={styles.description}>
-          Wanna know what's happening on{'\n'}campus?{' '}
-          <Text style={styles.highlight}>Join aboard</Text> and get to{'\n'}
-          know everything about your{'\n'}classmates and faculty.
-        </Text>
-      </Animated.View>
-
-      {/* Next Button */}
-      <Animated.View style={[styles.btnContainer, { opacity: btnAnim }]}>
-        <TouchableOpacity
-          style={styles.nextBtn}
-          onPress={() => navigation.navigate('Login')}
-          activeOpacity={0.85}
-        >
-          <Text style={styles.nextBtnText}>next →</Text>
-        </TouchableOpacity>
-      </Animated.View>
-
-      {/* Dots indicator */}
-      <View style={styles.dots}>
-        <View style={[styles.dot, styles.dotActive]} />
-        <View style={styles.dot} />
-        <View style={styles.dot} />
+        <View style={styles.highlightOverlay} />
+        <View style={styles.gradientBlur} />
       </View>
-    </SafeAreaView>
+
+      {/* Card */}
+      <View style={styles.cardContainer}>
+        <View style={styles.card}>
+          <View style={styles.categoryContainer}>
+            <Text style={styles.category}>{slides[activeIndex].category}</Text>
+            <View style={styles.categoryLine} />
+          </View>
+
+          <Text style={styles.title}>{slides[activeIndex].title}</Text>
+
+          <Text style={styles.description}>
+            {slides[activeIndex].description}
+          </Text>
+
+          {/* Dots */}
+          <View style={styles.dots}>
+            {slides.map((_, index) => (
+              <TouchableOpacity
+                key={index}
+                onPress={() => setActiveIndex(index)}
+              >
+                <View
+                  style={[
+                    styles.dot,
+                    activeIndex === index && styles.activeDot,
+                  ]}
+                />
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          {/* Next Button */}
+          <TouchableOpacity style={styles.nextBtn} onPress={handleNext}>
+            <Text style={styles.nextText}>
+              {activeIndex === slides.length - 1 ? "Get Started" : "Next →"}
+            </Text>
+          </TouchableOpacity>
+        
+        </View>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f3ee',
-    paddingHorizontal: 24,
+    backgroundColor: "#8BBDB3",
   },
-  header: {
-    paddingTop: 12,
-    paddingBottom: 8,
-  },
-  appName: {
-    fontFamily: 'serif',
-    fontSize: 18,
-    color: '#1a1a2e',
-    letterSpacing: 0.5,
-    fontWeight: '600',
-  },
-  imageContainer: {
-    alignItems: 'center',
-    marginTop: 12,
-    position: 'relative',
-  },
-  glowRing: {
-    position: 'absolute',
-    width: width * 0.78,
-    height: width * 0.78,
-    borderRadius: 28,
-    backgroundColor: 'transparent',
-    borderWidth: 2,
-    borderColor: '#f0a500',
-    shadowColor: '#f0a500',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 1,
-    shadowRadius: 20,
-    elevation: 20,
-    zIndex: 0,
-  },
-  heroImage: {
-    width: width * 0.75,
-    height: width * 0.75,
-    borderRadius: 24,
-    overflow: 'hidden',
-    zIndex: 1,
-  },
-  heroImageStyle: {
-    borderRadius: 24,
-  },
-  imageOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(10,5,20,0.15)',
-    borderRadius: 24,
-  },
-  textContent: {
-    marginTop: 32,
+
+  imageSection: {
     flex: 1,
+    width: "100%",
+    position: "relative",
   },
-  tagline: {
-    fontSize: 13,
-    color: '#888',
-    letterSpacing: 1.5,
-    textTransform: 'uppercase',
-    marginBottom: 12,
-    fontFamily: 'monospace',
+
+  backgroundImage: {
+    width: "100%",
+    height: "100%",
+    position: "absolute",
   },
+
+  highlightOverlay: {
+    position: "absolute",
+    top: "25%",
+    left: "8%",
+    right: "8%",
+    height: 180,
+    backgroundColor: "rgba(255,122,122,0.12)",
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: "rgba(255,122,122,0.25)",
+  },
+
+  gradientBlur: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 120,
+    backgroundColor: "rgba(139,189,179,0.95)",
+  },
+
+  cardContainer: {
+    alignItems: "center",
+    paddingBottom: 40,
+  },
+
+  card: {
+    width: "90%",
+    backgroundColor: "#fff",
+    borderRadius: 35,
+    padding: 35,
+    marginTop: -60,
+    alignItems: "center",
+  },
+
+  categoryContainer: {
+    alignItems: "center",
+    marginBottom: 15,
+  },
+
+  category: {
+    color: "#ff7a7a",
+    fontWeight: "800",
+    fontSize: 12,
+    letterSpacing: 3,
+  },
+
+  categoryLine: {
+    width: 40,
+    height: 3,
+    backgroundColor: "#ff7a7a",
+    marginTop: 8,
+  },
+
+  title: {
+    fontSize: 26,
+    fontWeight: "800",
+    marginVertical: 10,
+    color: "#1a1a2e",
+    textAlign: "center",
+  },
+
   description: {
-    fontSize: 20,
-    color: '#1a1a2e',
-    lineHeight: 30,
-    fontWeight: '700',
-    fontFamily: 'serif',
+    fontSize: 15,
+    color: "#666",
+    lineHeight: 24,
+    marginBottom: 30,
+    textAlign: "center",
   },
-  highlight: {
-    color: '#5ba8a0',
-  },
-  btnContainer: {
-    alignItems: 'flex-end',
-    paddingBottom: 12,
-  },
-  nextBtn: {
-    backgroundColor: '#5ba8a0',
-    paddingHorizontal: 28,
-    paddingVertical: 14,
-    borderRadius: 50,
-    shadowColor: '#5ba8a0',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 12,
-    elevation: 8,
-  },
-  nextBtnText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '700',
-    letterSpacing: 0.5,
-  },
+
   dots: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 6,
-    paddingBottom: 20,
-    paddingTop: 8,
+    flexDirection: "row",
+    marginBottom: 30,
   },
+
   dot: {
-    width: 7,
-    height: 7,
-    borderRadius: 4,
-    backgroundColor: '#ccc',
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: "#e0e0e0",
+    marginHorizontal: 6,
   },
-  dotActive: {
-    backgroundColor: '#5ba8a0',
-    width: 20,
+
+  activeDot: {
+    width: 28,
+    backgroundColor: "#ff7a7a",
+  },
+
+  nextBtn: {
+    backgroundColor: "#1e2235",
+    paddingVertical: 16,
+    paddingHorizontal: 40,
+    borderRadius: 30,
+    marginBottom: 15,
+  },
+
+  nextText: {
+    color: "#fff",
+    fontWeight: "700",
+    fontSize: 17,
+  },
+
+  skip: {
+    color: "#888",
+    fontSize: 14,
   },
 });
