@@ -1,2 +1,6 @@
 ClassStruct
-<img width="408" height="933" alt="swappy-20260225-174545" src="https://github.com/user-attachments/assets/8337eeff-1ea4-4c8b-a9b8-bce81a7cb0b0" />
+<br>
+<img width="869" height="974" alt="swappy-20260310-104814" src="https://github.com/user-attachments/assets/2eb55e0c-d201-4890-a44c-67bd327aa8b2" />
+<br>
+
+<img width="869" height="974" alt="swappy-20260310-104826" src="https://github.com/user-attachments/assets/072bc118-8930-4ccf-8c8d-8c212a7f9573" />
